@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 typedef struct Card{
     int valueCard;
@@ -38,25 +39,22 @@ int main(){
     int fichasPlayer = 100;
     int fichasCPU = 100; 
     int fichasNaAposta = 0;
-
-
     
-    while(1){
+    while (1) {
         printf("Bem Vindo ao Poker!\n");
         initCards(&headCheap, &tailCheap);
 
         //selecionando cartas jogadores    
         deliverCards(&headCheap, &tailCheap, &headPlayer, &tailPlayer, 2);
 
-        //selecionando cartas para o computador 
+        // //selecionando cartas para o computador 
         deliverCards(&headCheap, &tailCheap, &headCPU, &tailCPU, 2);
 
-        //mostrando as cartas do jogador
+        // //mostrando as cartas do jogador
         displayCards(headPlayer, 0);//cartas jogador
 
-        
-        //perguntar ao jogador se ele vai entrar no jogo; custo = 5 fichas;
-        printf("Vai entrar na partida (Custo 5 fichas)? [0] para não [1] para sim\n ");
+        // //perguntar ao jogador se ele vai entrar no jogo; custo = 5 fichas;
+        printf("\nVai entrar na partida (Custo 5 fichas)? [0] para não [1] para sim\n ");
         int keepOnGame;
         scanf("%d", &keepOnGame);
 
@@ -64,9 +62,9 @@ int main(){
             int sairDoJogo;
             printf("Deseja sair do jogo? [0] para não [1] para sim\n");
             scanf("%d", &sairDoJogo);
-            if(sairDoJogo = 0 ){
+            if(sairDoJogo == 0){
                 continue;
-            }else{
+            } else {
                 break;
             }
         }
@@ -74,27 +72,26 @@ int main(){
         fichasPlayer = fichasPlayer -5;
         fichasCPU = fichasCPU -5;
 
-
-        //reduzir 5 fichas no montante do jogador e da cpu;
+        // //reduzir 5 fichas no montante do jogador e da cpu;
         
-        //selecionando as 3 cartas inicias da mesa
+        // //selecionando as 3 cartas inicias da mesa
         deliverCards(&headCheap, &tailCheap, &headDealer, &tailDealer, 3);
         
         //mostrando as cartas da mesa
         displayCards(headDealer, 1);
 
-
-        //rodada de aposta
-        printf("%d \n Jogador, qual sua aposta?");
+        //r odada de aposta
+        printf("Jogador, qual sua aposta? ");
         int aposta1;
         scanf("%d", &aposta1);
 
-        if(aposta1>fichasPlayer);
+        if(aposta1>fichasPlayer) {
             printf("Você não pode apostar mais do que tem!!!");
             int apostaCorreta;
             scanf("%d", &apostaCorreta);
             aposta1 = apostaCorreta;
             
+        }
         fichasPlayer = fichasPlayer - aposta1;
 
         if(aposta1>fichasCPU){
@@ -103,8 +100,7 @@ int main(){
         }
 
         fichasCPU = fichasCPU - aposta1;
-        
-        
+            
         //selecionando as 2 cartas finais do jogo
         deliverCards(&headCheap, &tailCheap, &headDealer, &tailDealer, 2);
 
@@ -112,16 +108,16 @@ int main(){
         displayCards(headDealer, 1);
 
         //rodada de aposta final
-        printf("%d \n Jogador, qual sua aposta?");
+        printf("\nJogador, qual sua aposta?");
         int aposta2;
         scanf("%d", &aposta2);
 
-        if(aposta1>fichasPlayer);
+        if(aposta1>fichasPlayer) {
             printf("Você não pode apostar mais do que tem!!!");
             int apostaCorreta;
             scanf("%d", &apostaCorreta);
             aposta2 = apostaCorreta;
-            
+        }
         fichasPlayer = fichasPlayer - aposta2;
 
         if(aposta1>fichasCPU){
@@ -140,8 +136,6 @@ int main(){
             fichasPlayer = fichasPlayer - aposta1 - aposta2;
             fichasCPU = fichasCPU + aposta1 + aposta2;
             printf("Você perdeu. ");
-        }else{
-
         }
 
         int leaveGame;
@@ -149,7 +143,6 @@ int main(){
         if(leaveGame==1){
             break;
         }
-        
     }
     printf("\nFim do Jogo. Obrigado por jogar.\n");
     return 0;
@@ -209,10 +202,13 @@ void deliverCards(Card **sourceHead, Card **sourceTail,  Card **destinationHead,
     // outro for pra escolher qual carta vai ser distribuida usando o rand, mas lembrar de percorrer até o retorno de currentLength
 
     // se estiver na ultima execução, enqueue a carta 
-
     for(int j = 0; j<i; j++){
         int currentLength = currentLengthCards(*sourceHead);
+
         int cardNumber = rand() % currentLength-1;
+        srand( time(0));  
+
+        // printf("Current LENGTH: %i CARDNUMBER: %i\n", currentLength, cardNumber);
 
         Card *current = *sourceHead;
 
@@ -269,22 +265,16 @@ void insertionSort(Card *head) {
     head = sorted;
 }
 
-
-
-void displayCards(Card *head, int i){
-    char flag[23];
-    
+void displayCards(Card *head, int i){    
     if(i==0){
-        strcpy("Suas cartas são", flag);
+        printf("Suas cartas são: ");
     }
     else{
-        strcpy("As cartas da mesa são", flag);
+        printf("As cartas da mesa são: ");
     } 
-    
-    printf("%s: ", flag); 
-    
+        
     while(head != NULL){
-        if (head->suitCard = 0){ //naipe de espadas
+        if (head->suitCard == 0){ //naipe de espadas
             if(head->valueCard == 1){//Ás de Espadas
                 printf("A|Espadas");
             }
@@ -393,7 +383,6 @@ void removeAtAnyPoint(Card **head, Card **tail, int i) {
     
     free(current);
 }
-
 
 //função para comparar as cartas
 int compare(Card *hand) {
@@ -559,7 +548,6 @@ bool isFlush(Card *hand) {
 
     return countSpades >= 5 || countClubs >= 5 || countHearts >= 5 || countDiamonds >= 5;
 }
-
 
 bool isStraight(Card *head) {
     // Ordenar as cartas antes de verificar a sequência
