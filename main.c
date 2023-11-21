@@ -31,6 +31,7 @@ void removeAtAnyPoint(Card **head, Card **tail, int i);
 void limparListas(Card **head, Card **tail);
 int compareHands(Card *hand1, Card *hand2);
 void bubbleSort(Card* head);
+int getHighestCardValue(Card *hand);
 
 void bubbleSort(Card* head) {
     int swapped;
@@ -64,18 +65,32 @@ int main(){
     int fichasCPU = 100; 
     Card *headPlayer = NULL, *headCPU = NULL, *headDealer = NULL, *headCheap = NULL, *headDealerCopy1 = NULL, *headDealerCopy2 = NULL;
     Card *tailPlayer = NULL, *tailCPU = NULL, *tailDealer = NULL, *tailCheap = NULL, *tailDealerCopy1 = NULL, *tailDealerCopy2 = NULL;
-    
-    while (1) {
-         headPlayer = NULL, headCPU = NULL, headDealer = NULL, headCheap = NULL, headDealerCopy1 = NULL, headDealerCopy2 = NULL;
-         tailPlayer = NULL, tailCPU = NULL, tailDealer = NULL, tailCheap = NULL, tailDealerCopy1 = NULL, tailDealerCopy2 = NULL;
-        printf("Bem Vindo ao Poker!\n");
-        initCards(&headCheap, &tailCheap);
+    printf("Bem Vindo ao Poker!\n");
+    printf("\n----------------------------\n");
+    printf("Aperte [0] para Jogar\n");
+    printf("ou [1] para Sair");
+    printf("\n----------------------------\n");
 
+    int jogar_sair;
+    scanf("%d", &jogar_sair);
+
+    if(jogar_sair == 1 ){
+        printf("Saindo do Jogo.");
+        exit(0);
+    }
+
+    while (1) {
+        headPlayer = NULL, headCPU = NULL, headDealer = NULL, headCheap = NULL, headDealerCopy1 = NULL, headDealerCopy2 = NULL;
+        tailPlayer = NULL, tailCPU = NULL, tailDealer = NULL, tailCheap = NULL, tailDealerCopy1 = NULL, tailDealerCopy2 = NULL;
+
+        initCards(&headCheap, &tailCheap);
         //selecionando cartas jogadores    
         deliverCards(&headCheap, &tailCheap, &headPlayer, &tailPlayer, 2);
 
         // //selecionando cartas para o computador 
         deliverCards(&headCheap, &tailCheap, &headCPU, &tailCPU, 2);
+        int highestCardPlayer = getHighestCardValue(headPlayer);
+        int highestCardCPU = getHighestCardValue(headCPU);
 
         // //mostrando as cartas do jogador
         displayCards(headPlayer, 0);//cartas jogador
@@ -87,7 +102,7 @@ int main(){
 
         if (keepOnGame == 0){
             int sairDoJogo;
-            printf("\nDeseja sair do jogo? [0] para não [1] para sim\n");
+            printf("\nDeseja sair do jogo?\n [0] não\t|\t[1] para sim\n");
             scanf("%d", &sairDoJogo);
             if(sairDoJogo == 0){
                 continue;
@@ -99,15 +114,14 @@ int main(){
         fichasPlayer = fichasPlayer -5;
         fichasCPU = fichasCPU -5;
 
-        // //reduzir 5 fichas no montante do jogador e da cpu;
-        
+
         // //selecionando as 3 cartas inicias da mesa
         deliverCards(&headCheap, &tailCheap, &headDealer, &tailDealer, 3);
-        
+
         //mostrando as cartas da mesa
         displayCards(headDealer, 1);
 
-        //r odada de aposta
+        //rodada de aposta
         printf("\nJogador, qual sua aposta? \n");
         int aposta1;
         scanf("%d", &aposta1);
@@ -117,7 +131,7 @@ int main(){
             int apostaCorreta;
             scanf("%d", &apostaCorreta);
             aposta1 = apostaCorreta;
-            
+
         }
         fichasPlayer = fichasPlayer - aposta1;
 
@@ -127,7 +141,7 @@ int main(){
         }
 
         fichasCPU = fichasCPU - aposta1;
-            
+
         //selecionando as 2 cartas finais do jogo
         deliverCards(&headCheap, &tailCheap, &headDealer, &tailDealer, 2);
         concatenateQueues(&headPlayer, &tailPlayer, headDealer, tailDealer);
@@ -154,17 +168,28 @@ int main(){
             printf("\nCPU não tem a quantidade de fichas suficientes... Você o superou! \n Saindo do jogo.\n");
             break;
         }
-        
+
         int winner = compareHands(headPlayer, headCPU);
 
         if (winner == 0) {
-            printf("\nEmpate! Suas fichas foram devolvidas!\n");
-            fichasCPU = fichasCPU + aposta1 + aposta2 + 5;
-            fichasPlayer = fichasPlayer + aposta1 + aposta2 + 5;
+            printf("\nO jogo será determinado por quem tiver a carta mais alta!\n");
+            if(highestCardCPU>highestCardPlayer){
+                printf("\nVocê perdeu.\n");
+                fichasCPU = fichasCPU + 2*aposta1 + 2*aposta2 + 10;
+            }
+            else if(highestCardPlayer>highestCardCPU){
+                printf("\nVocê venceu!\n");
+                fichasPlayer = fichasPlayer + 2*aposta1 + 2*aposta2+10;
+            }
+            else{
+                printf("\nEmpate! A carta mais alta da CPU era igual a sua!\nTodas as fichas foram devolvidas!\n");
+                fichasCPU = fichasCPU + aposta1 + aposta2 + 5;
+                fichasPlayer = fichasPlayer + aposta1 + 5;
+            }
         } else if (winner == 1) {
             printf("\nVocê venceu!!!\n");
             fichasPlayer = fichasPlayer + 2*aposta1 + 2*aposta2+10;
-            
+
         } else {
             printf("\nVocê perdeu.\n");
             fichasCPU = fichasCPU + 2*aposta1 + 2*aposta2 + 10;
@@ -189,8 +214,6 @@ int main(){
 }
 
 void enqueue(Card **head, Card **tail, int cardValue, int cardSuit){
-    /* enfileira as cartas na mão de cada jogador, mesa ou cpu;
-    */
    Card* newcard = (Card *)malloc(sizeof(Card));
 
    if(newcard != NULL){
@@ -263,7 +286,7 @@ void displayCards(Card *head, int i){
     else{
         printf("\nAs cartas que a CPU tinha eram: ");
     }
-        
+
     while(head != NULL){
         if (head->suitCard == 0){ //naipe de espadas
             if(head->valueCard == 1){//Ás de Espadas
@@ -353,7 +376,6 @@ void removeAtAnyPoint(Card **head, Card **tail, int i) {
 
     Card *current = *head;
 
-    // Caso especial: remoção do primeiro nó
     if (i == 0) {
         *head = current->next;
         if (*head != NULL) {
@@ -362,25 +384,21 @@ void removeAtAnyPoint(Card **head, Card **tail, int i) {
     } else {
         int currentPosition = 0;
 
-        // Percorre a lista até o nó a ser removido
         while (current != NULL && currentPosition < i) {
             current = current->next;
             currentPosition++;
         }
 
-        // Se chegamos ao final da lista e ainda não encontramos a posição, saímos
         if (current == NULL) {
             return;
         }
 
-        // Atualiza os ponteiros do nó anterior
         if (current->prev != NULL) {
             current->prev->next = current->next;
         } else {
             *head = current->next;
         }
 
-        // Atualiza os ponteiros do nó seguinte
         if (current->next != NULL) {
             current->next->prev = current->prev;
         } else {
@@ -388,7 +406,6 @@ void removeAtAnyPoint(Card **head, Card **tail, int i) {
         }
     }
 
-    // Libera a memória do nó removido
     free(current);
 }
 
@@ -725,3 +742,18 @@ int compareHands(Card *hand1, Card *hand2) {
         return 0; // Empate
     }
 }
+
+// Função para obter o valor da carta mais alta em uma mão
+int getHighestCardValue(Card *hand) {
+    int highestValue = 0;
+
+    while (hand != NULL) {
+        if (hand->valueCard > highestValue) {
+            highestValue = hand->valueCard;
+        }
+        hand = hand->next;
+    }
+
+    return highestValue;
+}
+
