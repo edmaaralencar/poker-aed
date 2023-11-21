@@ -175,36 +175,21 @@ int main(){
         }
         printf("SEU SALDO: %d fichas\nSALDO CPU: %d fichas", fichasPlayer, fichasCPU);
 
-        limparListas(&headPlayer, &tailPlayer);
-        limparListas(&headCPU, &tailCPU);
-        limparListas(&headDealer, &tailDealer);
-        limparListas(&headCheap, &tailCheap);
-
-        
-
-
-
         int leaveGame;
         printf("\nDeseja continuar no jogo? \n[0] para continuar \t|\t [1] para sair\n");
         scanf("%d", &leaveGame);
-        if(leaveGame==1){
-                printf("\nFim do Jogo. Obrigado por jogar.\n");
+        if (leaveGame == 1){
+            printf("\nFim do Jogo. Obrigado por jogar.\n");
 
-        //     limparListas(&headPlayer, &tailPlayer);
-        // // limparListas(&headCPU, &tailCPU);
-        // // limparListas(&headDealer, &tailDealer);
-        // limparListas(&headCheap, &tailCheap);
             exit(0);
         }
-
-
     }
-    // printf("\nFim do Jogo. Obrigado por jogar.\n");
 
-    //         limparListas(&headPlayer, &tailPlayer);
-    //     limparListas(&headCPU, &tailCPU);
-    //     limparListas(&headDealer, &tailDealer);
-    //     limparListas(&headCheap, &tailCheap);
+
+    limparListas(&headPlayer, &tailPlayer);
+    limparListas(&headCPU, &tailCPU);
+    limparListas(&headDealer, &tailDealer);
+    limparListas(&headCheap, &tailCheap);
     return 0;
 }
 
