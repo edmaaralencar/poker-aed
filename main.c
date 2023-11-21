@@ -30,9 +30,7 @@ int isOnePair(Card *hand);
 void removeAtAnyPoint(Card **head, Card **tail, int i);
 void limparListas(Card **head, Card **tail);
 int compareHands(Card *hand1, Card *hand2);
-void copyList(Card **sourceHead, Card **sourceTail, Card **destinationHead, Card **destinationTail);
 void bubbleSort(Card* head);
-
 
 void bubbleSort(Card* head) {
     int swapped;
@@ -184,7 +182,6 @@ int main(){
             exit(0);
         }
     }
-
 
     limparListas(&headPlayer, &tailPlayer);
     limparListas(&headCPU, &tailCPU);
@@ -740,14 +737,5 @@ int compareHands(Card *hand1, Card *hand2) {
         return 2; // Mão 2 vence
     } else {
         return 0; // Empate
-    }
-}
-
-void copyList(Card **sourceHead, Card **sourceTail, Card **destinationHead, Card **destinationTail) {
-    Card *currentSource = *sourceHead;
-
-    while (currentSource != NULL) {
-        enqueue(destinationHead, destinationTail, currentSource->valueCard, currentSource->suitCard);
-        currentSource = currentSource->next;
     }
 }
