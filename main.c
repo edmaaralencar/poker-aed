@@ -15,7 +15,6 @@ void enqueue(Card **head, Card **tail, int cardValue, int cardSuit);
 void initCards(Card **head, Card **tail);
 int currentLengthCards(Card *head);
 void deliverCards(Card **sourceHead, Card **sourceTail,  Card **destinationHead, Card **destinationTail, int i);
-void insertionSort(Card *head); 
 void displayCards(Card *head, int i);
 void concatenateQueues(Card **head_01, Card **tail_01, Card *head_02, Card *tail_02);
 int compare(Card *hand);
@@ -34,7 +33,6 @@ int compareHands(Card *hand1, Card *hand2);
 void copyList(Card **sourceHead, Card **sourceTail, Card **destinationHead, Card **destinationTail);
 void bubbleSort(Card* head);
 
-void printList(Card *head);
 
 void bubbleSort(Card* head) {
     int swapped;
@@ -64,18 +62,10 @@ void bubbleSort(Card* head) {
     } while (swapped);
 }
 
-void printList(Card *head) {
-  while (head != NULL) {
-    printf("Head: %i\n", head->valueCard);
-    head = head->next;
-  }
-}
 
 int main(){
-    int cardValue, cardSuit;
     int fichasPlayer = 100;
     int fichasCPU = 100; 
-    int fichasNaAposta = 0;
     Card *headPlayer = NULL, *headCPU = NULL, *headDealer = NULL, *headCheap = NULL, *headDealerCopy1 = NULL, *headDealerCopy2 = NULL;
     Card *tailPlayer = NULL, *tailCPU = NULL, *tailDealer = NULL, *tailCheap = NULL, *tailDealerCopy1 = NULL, *tailDealerCopy2 = NULL;
     
@@ -95,7 +85,7 @@ int main(){
         displayCards(headPlayer, 0);//cartas jogador
 
         // //perguntar ao jogador se ele vai entrar no jogo; custo = 5 fichas;
-        printf("\nVai entrar na partida (Custo 5 fichas)? [0] para não [1] para sim\n ");
+        printf("\nVai entrar na partida (Custo 5 fichas)?\n [0] não\t|\t[1] para sim\n ");
         int keepOnGame;
         scanf("%d", &keepOnGame);
 
@@ -162,6 +152,7 @@ int main(){
             aposta2 = apostaCorreta;
         }
         fichasPlayer = fichasPlayer - aposta2;
+        fichasCPU = fichasCPU - aposta2;
 
         if(aposta1>fichasCPU){
             printf("\nCPU não tem a quantidade de fichas suficientes... Você o superou! \n Saindo do jogo.\n");
@@ -171,27 +162,41 @@ int main(){
         int winner = compareHands(headPlayer, headCPU);
 
         if (winner == 0) {
-            printf("\nEmpate!\n");
+            printf("\nEmpate! Suas fichas foram devolvidas!\n");
+            fichasCPU = fichasCPU + aposta1 + aposta2 + 5;
+            fichasPlayer = fichasPlayer + aposta1 + aposta2 + 5;
         } else if (winner == 1) {
             printf("\nVocê venceu!!!\n");
+            fichasPlayer = fichasPlayer + 2*aposta1 + 2*aposta2+10;
+            
         } else {
             printf("\nVocê perdeu.\n");
+            fichasCPU = fichasCPU + 2*aposta1 + 2*aposta2 + 10;
         }
+        printf("SEU SALDO: %d fichas\nSALDO CPU: %d fichas", fichasPlayer, fichasCPU);
+
+        limparListas(&headPlayer, &tailPlayer);
+        limparListas(&headCPU, &tailCPU);
+        limparListas(&headDealer, &tailDealer);
+        limparListas(&headCheap, &tailCheap);
+
+        
 
 
 
         int leaveGame;
-        printf("Deseja continuar no jogo? \n[0] para continuar \t|\t [1] para sair\n");
+        printf("\nDeseja continuar no jogo? \n[0] para continuar \t|\t [1] para sair\n");
         scanf("%d", &leaveGame);
         if(leaveGame==1){
                 printf("\nFim do Jogo. Obrigado por jogar.\n");
 
-            limparListas(&headPlayer, &tailPlayer);
-        // limparListas(&headCPU, &tailCPU);
-        // limparListas(&headDealer, &tailDealer);
-        limparListas(&headCheap, &tailCheap);
+        //     limparListas(&headPlayer, &tailPlayer);
+        // // limparListas(&headCPU, &tailCPU);
+        // // limparListas(&headDealer, &tailDealer);
+        // limparListas(&headCheap, &tailCheap);
             exit(0);
         }
+
 
     }
     // printf("\nFim do Jogo. Obrigado por jogar.\n");
@@ -267,52 +272,17 @@ void deliverCards(Card **sourceHead, Card **sourceTail,  Card **destinationHead,
     }
 }
 
-void insertionSort(Card *head) {
-    if (head == NULL || head->next == NULL) {
-        return; 
-    }
-    
-    Card *sorted = NULL; 
-
-    while (head != NULL) {
-        Card *current = head;
-        head = head->next;
-
-        if (sorted == NULL || current->valueCard <= sorted->valueCard) {
-            current->next = sorted;
-            current->prev = NULL;
-            if (sorted != NULL) {
-                sorted->prev = current;
-            }
-            
-            sorted = current;
-                
-        } else {
-            Card *temp = sorted;
-            while (temp->next != NULL && temp->next->valueCard < current->valueCard) {
-                temp = temp->next;
-            }
-        
-            current->next = temp->next;
-        
-            if (temp->next != NULL) {
-                temp->next->prev = current;
-            }
-        
-            temp->next = current;
-            current->prev = temp;
-        }
-    }    
-    head = sorted;
-}
 
 void displayCards(Card *head, int i){    
     if(i==0){
-        printf("Suas cartas são: ");
+        printf("\nSuas cartas são: ");
     }
-    else{
-        printf("As cartas da mesa são: ");
+    else if(i==1){
+        printf("\nAs cartas da mesa são: ");
     } 
+    else{
+        printf("\nAs cartas que a CPU tinha eram: ");
+    }
         
     while(head != NULL){
         if (head->suitCard == 0){ //naipe de espadas
