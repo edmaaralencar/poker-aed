@@ -80,16 +80,13 @@ int main(){
     Card *tailPlayer = NULL, *tailCPU = NULL, *tailDealer = NULL, *tailCheap = NULL, *tailDealerCopy1 = NULL, *tailDealerCopy2 = NULL;
     
     while (1) {
+         headPlayer = NULL, headCPU = NULL, headDealer = NULL, headCheap = NULL, headDealerCopy1 = NULL, headDealerCopy2 = NULL;
+         tailPlayer = NULL, tailCPU = NULL, tailDealer = NULL, tailCheap = NULL, tailDealerCopy1 = NULL, tailDealerCopy2 = NULL;
         printf("Bem Vindo ao Poker!\n");
         initCards(&headCheap, &tailCheap);
 
         //selecionando cartas jogadores    
         deliverCards(&headCheap, &tailCheap, &headPlayer, &tailPlayer, 2);
-
-        // headPlayer = (Card *)malloc(sizeof(Card));
-        // headPlayer->valueCard = 10;
-        // headPlayer->suitCard = 0;
-        // headPlayer->next = (Card *)malloc(sizeof(Card));
 
         // //selecionando cartas para o computador 
         deliverCards(&headCheap, &tailCheap, &headCPU, &tailCPU, 2);
@@ -147,17 +144,11 @@ int main(){
             
         //selecionando as 2 cartas finais do jogo
         deliverCards(&headCheap, &tailCheap, &headDealer, &tailDealer, 2);
-        // copyList(&headDealer, &tailDealer, &headDealerCopy1, &tailDealerCopy1);
-        // copyList(&headDealer, &tailDealer, &headDealerCopy2, &tailDealerCopy2);
         concatenateQueues(&headPlayer, &tailPlayer, headDealer, tailDealer);
         concatenateQueues(&headCPU, &tailCPU, headDealer, tailDealer);
 
         //mostrando as 3 cartas iniciais + 2 finais
         displayCards(headDealer, 1);
-
-        // Ordenar as mãos dos jogadores
-        // insertionSort(headPlayer);
-        // insertionSort(headCPU);
 
         //rodada de aposta final
         printf("\nJogador, qual sua aposta? \n");
@@ -187,21 +178,28 @@ int main(){
             printf("\nVocê perdeu.\n");
         }
 
-        // limparListas(&headPlayer, &tailPlayer);
-        // limparListas(&headCPU, &tailCPU);
-        // limparListas(&headDealer, &tailDealer);
-        // limparListas(&headCheap, &tailCheap);
 
 
         int leaveGame;
         printf("Deseja continuar no jogo? \n[0] para continuar \t|\t [1] para sair\n");
         scanf("%d", &leaveGame);
         if(leaveGame==1){
-            break;
+                printf("\nFim do Jogo. Obrigado por jogar.\n");
+
+            limparListas(&headPlayer, &tailPlayer);
+        // limparListas(&headCPU, &tailCPU);
+        // limparListas(&headDealer, &tailDealer);
+        limparListas(&headCheap, &tailCheap);
+            exit(0);
         }
 
     }
-    printf("\nFim do Jogo. Obrigado por jogar.\n");
+    // printf("\nFim do Jogo. Obrigado por jogar.\n");
+
+    //         limparListas(&headPlayer, &tailPlayer);
+    //     limparListas(&headCPU, &tailCPU);
+    //     limparListas(&headDealer, &tailDealer);
+    //     limparListas(&headCheap, &tailCheap);
     return 0;
 }
 
@@ -748,8 +746,10 @@ int isOnePair(Card *hand) {
 }
 
 void limparListas(Card **head, Card **tail) {
-    Card *current = *head;
-    Card *next;
+    if (head != NULL) {
+
+    Card* current = *head;
+    Card* next;
 
     while (current != NULL) {
         next = current->next;
@@ -757,17 +757,27 @@ void limparListas(Card **head, Card **tail) {
         current = next;
     }
 
-    *head = NULL;
+    *head = NULL; // Set head to NULL after freeing all nodes
     *tail = NULL;
+    }
+
+    // Card *current = *head;
+    // Card *next;
+
+    // while (current != NULL) {
+    //     next = current->next;
+    //     free(current);
+    //     current = next;
+    // }
+
+    // *head = NULL;
+    // *tail = NULL;
 }
 
 int compareHands(Card *hand1, Card *hand2) {
     // Chama as funções de comparação ajustadas
     int score1 = compare(hand1);
     int score2 = compare(hand2);
-
-    printf("Score 1: %i\n", score1);
-    printf("Score 2: %i\n", score2);
 
     if (score1 > score2) {
         return 1; // Mão 1 vence
