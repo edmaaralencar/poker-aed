@@ -82,7 +82,7 @@ int main(){
     while (1) {
         headPlayer = NULL, headCPU = NULL, headDealer = NULL, headCheap = NULL, headDealerCopy1 = NULL, headDealerCopy2 = NULL;
         tailPlayer = NULL, tailCPU = NULL, tailDealer = NULL, tailCheap = NULL, tailDealerCopy1 = NULL, tailDealerCopy2 = NULL;
-
+        printf("SEU SALDO: %d\nSALDO DA CPU: %d\n", fichasPlayer, fichasCPU);
         initCards(&headCheap, &tailCheap);
         //selecionando cartas jogadores    
         deliverCards(&headCheap, &tailCheap, &headPlayer, &tailPlayer, 2);
