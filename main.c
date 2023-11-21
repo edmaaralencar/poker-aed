@@ -37,7 +37,6 @@ void bubbleSort(Card* head) {
     Card* ptr1;
     Card* lptr = NULL;
 
-    // Checking for empty list
     if (head == NULL)
         return;
 
@@ -47,7 +46,6 @@ void bubbleSort(Card* head) {
 
         while (ptr1->next != lptr) {
             if (ptr1->valueCard > ptr1->next->valueCard) {
-                // Swap the valueCard
                 int temp = ptr1->valueCard;
                 ptr1->valueCard = ptr1->next->valueCard;
                 ptr1->next->valueCard = temp;
@@ -709,21 +707,9 @@ void limparListas(Card **head, Card **tail) {
         current = next;
     }
 
-    *head = NULL; // Set head to NULL after freeing all nodes
+    *head = NULL;
     *tail = NULL;
     }
-
-    // Card *current = *head;
-    // Card *next;
-
-    // while (current != NULL) {
-    //     next = current->next;
-    //     free(current);
-    //     current = next;
-    // }
-
-    // *head = NULL;
-    // *tail = NULL;
 }
 
 int compareHands(Card *hand1, Card *hand2) {
