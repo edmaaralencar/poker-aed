@@ -11,6 +11,10 @@ typedef struct Card{
     struct Card *prev;
 }Card;
 
+void teste() {
+    printf("oi");   
+}
+
 void enqueue(Card **head, Card **tail, int cardValue, int cardSuit);
 void initCards(Card **head, Card **tail);
 int currentLengthCards(Card *head);
